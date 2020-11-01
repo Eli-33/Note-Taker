@@ -14,10 +14,11 @@ Create an application that can be used to write, save, and delete notes. This ap
   SO THAT I can organize my thoughts and keep track of tasks I need to complete
 
   ## Preview:
-  ![Application Preview]()
+  ![Application Preview](https://github.com/Eli-33/Note-Taker/blob/main/NOTE-TAKER.gif)
 
    ## Images
-  [Images If Available]()
+  [Images 1](https://github.com/Eli-33/Note-Taker/blob/main/ScreenShots/First%20page.PNG)
+  [Images 2](https://github.com/Eli-33/Note-Taker/blob/main/ScreenShots/note%20page.PNG)
 
   ## Deployed Link:
    [Note Taker App](https://quiet-journey-80660.herokuapp.com/)
