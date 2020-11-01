@@ -1,41 +1,54 @@
 const fs = require('fs');
-const dB = require ("../db/db");
+const path = require("path");
+const util = require('util');
+
+const writefileAsync = util.promisify(fs.writeFile);
+const readFileAsync = util.promisify(fs.readFile);
 
 // Routing
 module.exports = app => {
- // Setup notes variable
- fs.readFile("db/db.json","utf8", (err, data) => {
-  if (err) throw err;
-  const note = JSON.parse(data);
- 
+
   // API GET Requests
   app.get("/api/notes", function(req, res) {
-    console.log(note);
-    res.json(note);
-  });
-  
-//  Post Requests
-  app.post("/api/notes", function(req, res) {
-
-      dB.push(req.body);
-      updateDb();
-      res.json("save");
-  });
-
-// Delete Request
-app.delete("/api/notes/:id", function(req, res) {
-  note.splice(req.params.id, 1);
-  updateDb();
-  console.log("Deleted note with id "+req.params.id);
-});
-
- //updates the json file whenever a note is added or deleted
- function updateDb() {
-    fs.writeFile("db/db.json",JSON.stringify(dB,'\t'),err => {
-      if (err) throw err;
-      return true;
+    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
+    .then(function (note) {
+        return res.json(JSON.parse(note));
     });
-  }
+
+  });
+//  Post Requests
+  app.post("/api/notes", function (req, res) {
+    const newNote = req.body;
+    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
+        .then(function (note) {
+            notes = JSON.parse(note);
+            if (newNote.id || newNote.id === 0) {
+                let currNote = notes[newNote.id];
+                currNote.title = newNote.title;
+                currNote.text = newNote.text;
+            } else {
+                notes.push(newNote);
+            }
+            writefileAsync(path.join(__dirname, "../db/db.json"), JSON.stringify(notes))
+                .then(function () {
+                    console.log("the note is writen");
+                })
+        });
+    res.json(newNote);
+});
+// Delete Request
+app.delete("/api/notes/:id", function (req, res) {
+    const id = req.params.id;
+    readFileAsync(path.join(__dirname, "../db/db.json"), "utf8")
+        .then(function (note) {
+            notes = JSON.parse(note);
+            notes.splice(id, 1);
+            writefileAsync(path.join(__dirname, "../db/db.json"), JSON.stringify(notes))
+                .then(function () {
+                    console.log("Deleted db.json");
+                })
+        });
+    res.json(id);
 });
 }
  
